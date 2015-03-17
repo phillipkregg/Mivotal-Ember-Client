@@ -1,0 +1,56 @@
+.show-page-container {
+
+	.well {
+		background: white;
+		margin: 0;
+		padding: 10px;
+		border-radius: 0;
+		margin-bottom: 20px;
+
+		.col-md-1 {
+			padding: 0;
+		}
+	}
+
+	.project-title {
+		font-size: 18px;
+		color: #666;
+	}
+
+	.tracker-title {
+		font-size: 20px;
+		color: #666;
+		padding: 0 40px 0 40px;
+		text-align: left;
+	}
+
+	.description {					
+		color: #666;
+		font-size: 18px;
+		margin: 20px 0 20px 0;
+	}
+
+	.button-container {
+		width: 100%;		
+		overflow: auto;
+		margin-top: 20px;
+
+		.btn {
+			border-radius: 0;
+			width: 50%;
+			
+			&:first-child {
+				float: left;
+				background: darken($light-grey-3, 5%);
+			}
+			&:last-child {
+				float: right;
+				background: darken($light-green-2, 5%);
+			}
+		}
+
+	}
+
+	
+	
+}

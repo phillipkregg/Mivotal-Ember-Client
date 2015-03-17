@@ -1,0 +1,554 @@
+<!DOCTYPE html>
+
+<html>  
+  <head>   
+    <!-- ################# Styles ####################### -->
+    <!-- Bootstrap Latest compiled and minified CSS -->
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.1/css/bootstrap.min.css">
+    <!-- Optional theme -->
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.1/css/bootstrap-theme.min.css">
+    <link rel="stylesheet" href="libs/font-awesome-4.3.0/css/font-awesome.css">
+    <link rel="stylesheet" href="scss/application.css">
+    
+     <!-- ################# Script Requirements ####################### -->
+    </!-- ember requirements -->
+    <script type="text/javascript" src="ember/jquery-1.10.2.js"></script>
+    <script type="text/javascript" src="ember/handlebars-v2.0.0.js"></script>
+    <script type="text/javascript" src="ember/ember-1.9.1.js"></script>
+    <!-- Bootstrap Latest compiled and minified JavaScript -->
+    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.1/js/bootstrap.min.js"></script>
+    <!-- jquery sortable -->
+    <script type="text/javascript" src="libs/jquery_sortable/jquery.sortable.js"></script>
+    <!-- jquery ui -->
+    <script type="text/javascript" src="libs/jqueryui/jquery-ui.js"></script>
+    <!-- moment js -->
+    <!-- <script type="text/javascript" src="libs/moment/moment.js"></script> -->
+    <script type="text/javascript" src="require.js"></script>
+    
+    
+  </head>
+
+  <body>
+
+    <div class="container" id="mivotal-main">
+      <!-- Root of Application Views -->
+    </div>
+
+    <!--################ BEGINNING OF HANDLEBARS TEMPLATES ##################-->
+
+    <script type="text/x-handlebars" data-template-name="index">
+      <div class="homepage">
+        <h1>Mivotal</h1>
+        <p>Pivotal for Motion! <span>(sort of)</span></p>
+
+        {{#link-to 'trackers' class="btn btn-trackers"}} Take me to Trackers! {{/link-to}}
+      </div>         
+
+    </script>
+
+    <script type="text/x-handlebars" data-template-name="trackers">    
+      <h4 class="subheader-title">Mivotal</h4>
+      
+      {{outlet}}
+
+    </script>
+
+    <script type="text/x-handlebars" data-template-name="trackers/index">
+
+      <ul class="breadcrumb">
+        <li>{{#link-to 'index'}}home{{/link-to}}</li>
+        <li>trackers</li>        
+      </ul>
+
+      <div class="panel panel-default">
+        <div class="panel-body">
+          <div class="dropdown">
+            <button class="btn btn-default dropdown-toggle" type="button" id="dropdownMenu1" data-toggle="dropdown" aria-expanded="true">
+              {{currentFilter}}
+              <span class="caret"></span>
+            </button>
+            <ul class="dropdown-menu" role="menu" aria-labelledby="dropdownMenu1">
+              {{#each dev in devs}} 
+                <li role="presentation"><a {{action 'changeFilter' dev}} role="menuitem" tabindex="-1" href="#">{{dev.name}} </a></li>          
+              {{/each}}
+            </ul>
+          </div>
+        </div>
+      </div>     
+    
+      <div class="trackers-container">
+        <ul class="trackers-list sortable">
+          {{#each tracker in this}}
+            
+              <li class="tracker" {{bind-attr data-id="tracker.id"}} {{bind-attr data-points="tracker.points"}}>
+                <span {{action 'dragMe'}} {{bind-attr class=":dragger tracker.folder_title"}}></span>                               
+                {{#link-to 'trackers.show' tracker.id}}
+                <span class="tracker-title">{{tracker.title}}</span>
+                {{/link-to}}
+
+                <span class="assigned-to">{{tracker.assigned_to_fullname}}</span>
+                <span class="status">{{tracker.status}}</span>
+              </li>
+
+              
+            
+          {{/each}}
+        </ul>
+      </div>   
+
+    </script>
+
+
+    <script type="text/x-handlebars" data-template-name="trackers/show">
+      <ul class="breadcrumb">
+        <li>{{#link-to 'index'}}home{{/link-to}}</li>
+        <li>{{#link-to 'trackers'}}trackers{{/link-to}}</li>
+        <li> {{this.id}}</li> 
+      </ul>
+
+      <div id="update-tracker-alert" class="alert alert-warning alert-dismissible" role="alert" style="display: none;">
+        <button type="button" class="close" data-dismiss="alert" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+        <strong>Success!</strong> Your task has been updated.
+      </div>
+  
+      <div class="show-page-container">
+
+        <div class="project-title">
+          {{projectTitle}}
+        </div>
+
+        <div class="well row">        
+
+          <div class="col-md-1">
+            <div class="label label-default pull-left">
+              {{id}}
+            </div>
+          </div>                    
+
+          <div class="col-md-10 text-center tracker-title">
+            {{title}}
+          </div>
+
+          <div class="col-md-1">
+            <div class="label label-primary pull-right" {{action "startTask"}}>
+              {{#if status}}
+                {{status}}
+              {{else}}
+                No Status
+              {{/if}}
+            </div>    
+          </div>          
+
+        </div>
+        
+       
+        
+        <form class="form">         
+
+          <div class="row">
+            <div class="form-group col-md-12">
+              <label for="status">Assigned To</label>
+              {{view "select" value=assigned_to_fullname content=devs optionValuePath="content.name" optionLabelPath="content.name" class="form-control"}}
+            </div>            
+          </div>
+
+          <div class="row">
+            <div class="col-md-12">
+              <div class="label label-primary">Type: {{folder_title}}</div>
+              <div class="label label-info">Points: {{points}}</div>
+              <div class="label label-warning">Priority: {{priority}}</div>  
+            </div>
+          </div>
+
+          <div class="description">
+            {{description}}
+          </div>
+                    
+          
+          <div class="row">
+            <div class="form-group col-md-2">
+              <label for="status">Status</label>
+              {{view "select" value=status content=status_options class="form-control"}}
+            </div>
+            <div class="form-group col-md-2">
+              <label for="estimated-effort">Estimated Effort</label>
+              {{input id="estimated-effort" class="form-control" type='number' value=estimated_effort }}
+            </div>  
+            <div class="form-group col-md-2">
+              <label for="remaining-effort">Remaining Effort</label>
+              {{input id="remaining-effort" type='number' value=remaining_effort class="form-control"}}
+            </div>
+            <div class="form-group col-md-2">
+              <label for="actual-effort">Actual Effort</label>
+              {{input id="actual-effort" class="form-control"  type='number' value=actual_effort }}
+            </div>  
+          </div>          
+
+          <div class="button-container">
+            <button class="btn btn-default btn-lg" {{action "goToTrackers"}}>
+              Cancel
+            </button>             
+            <button class="btn btn-success btn-lg" {{action "updateTracker"}}>
+              Update Tracker
+            </button> 
+          </div>
+        </form>
+
+      </div>
+      
+    </script>
+    
+
+    <!--################ END OF HANDLEBARS TEMPLATES ##################-->
+      
+    <script type="text/javascript">
+
+      // There is a global var containing the initial load data called "output".
+      // It is being created by the GetPlanningFolder.php file 
+      // Data is normally handled through promises   
+
+
+      (function() {
+        data = jQuery.getJSON('http://localhost:3000', function(data) {
+
+
+          
+            window.data = data;
+        });
+
+        //debugger;
+
+        
+      }()); 
+
+      
+                                 
+      window.Mivotal = Ember.Application.create({
+        rootElement: "#mivotal-main"
+        //LOG_TRANSITIONS: true
+      });
+
+      Mivotal.Router.map(function() {
+        this.resource("trackers", { path: "/trackers" }, function() {
+          this.route("show", { path: "/:trackerid"} );
+          
+        });
+        
+      })
+
+      // if this doesn't exist, ember creates the index route automagically
+      Mivotal.IndexRoute = Ember.Route.extend({});
+
+      Mivotal.TrackersRoute = Ember.Route.extend({
+
+        
+        
+        model: function() {
+          return Ember.$.getJSON('http://localhost:3000').then(function(response) {
+            return response
+          });     
+            
+        },
+        
+        
+        afterModel: function(transition, route) {          
+          //this.controllerFor("TrackersIndex").send('getCurrentFilter');
+        }
+        
+
+
+      });
+
+      Mivotal.TrackersShowRoute = Ember.Route.extend({
+
+
+        model: function(params) {
+          var modelsArray = this.modelFor('trackers'),              
+              tracker;     
+
+          $.each(modelsArray, function(key, value) {
+
+            //debugger;
+           
+            if (value.id === params.trackerid) {
+              
+              tracker = value;
+            }
+          });
+
+          console.log(tracker);
+
+          return tracker;
+          
+        }
+      });
+
+
+      Mivotal.TrackersIndexController = Ember.ArrayController.extend({
+
+        developers : [
+            { name: "All"},
+            { name: "No user"},
+            { name: "Jeff Martin"},
+            { name: "George Baldwin" , id: "dp077286" },
+            { name: "Phillip Lackey" , id: "dp078971" },
+            { name: "Troy Mulder" , id: "dp077286" },
+            { name: "Josh Flayhart" , id: "dp077286" },
+            { name: "Brice Mason" , id: "dp077286" },
+            { name: "Jason Malfatto" , id: "dp077286" }
+        ],
+
+        needs: ["TrackersShow"], 
+
+         statusOptions: ['Started', 'In Development', 'Open / Acknowledged', 'Not Started'],
+
+        sortProperties: ['points'],   
+        sortAscending: false,     
+
+        devs : function() {           
+          return this.developers;
+        }.property(),
+
+      
+        
+        model: function() {  
+          var trackers = window.data        
+          
+          return trackers;
+        }.property(),
+        
+
+        currentFilter: function() {
+          return this.developers[0].name;
+        }.property(),
+
+        
+        actions: {               
+
+          changeFilter: function(item) {
+            
+            this.set('currentFilter', item.name);  
+
+            debugger;
+            
+            if (this.get('currentFilter') === "All") {
+              this.set('model', window.data);
+
+            } else {
+              this.set('model', window.data.filterBy("assigned_to_fullname", this.get('currentFilter')));
+            }
+            
+          }          
+
+        } // end actions
+
+      });
+
+      Mivotal.TrackersShowController = Ember.ObjectController.extend({
+
+        developers : [
+            { name: "All"},
+            { name: "No user"},
+            { name: "Jeff Martin"},
+            { name: "George Baldwin" , id: "dp077286" },
+            { name: "Phillip Lackey" , id: "dp078971" },
+            { name: "Troy Mulder" , id: "dp077286" },
+            { name: "Josh Flayhart" , id: "dp077286" },
+            { name: "Brice Mason" , id: "dp077286" },
+            { name: "Jason Malfatto" , id: "dp077286" }
+        ],
+
+        isStarted: function() {
+          var model = this.model;
+          if (model.status === "Not Started") {
+            return false;
+          } else {
+            return true;
+          }
+        },
+
+        statusOptions: ['Started', 'In Development', 'Open / Acknowledged', 'Not Started'],
+
+        devs : function() {           
+          return this.developers;
+        }.property(),
+
+        actions: {
+
+          testing: function() {
+            alert('test!');
+          },
+          startTask: function() {           
+            alert('starting task');
+          },
+          goToTrackers: function() {
+            this.transitionToRoute("trackers");
+          },
+  
+          updateTracker: function(trackerData) {
+            alert('update tracker');
+
+            var data;
+                updateAlert = $("#update-tracker-alert");
+
+            if (trackerData) {
+              data = trackerData;
+            } else {
+              data = this.model;
+            }
+
+            data.assignedTo = data.assigned_to_username;
+            data = JSON.stringify(data);
+
+           // debugger;
+
+            
+          
+            $.ajax({
+                  url: 'http://localhost:3000/home/set_tracker_data',
+                  data: data,
+                  dataType: 'json',
+                  contentType: 'application/json',
+                  type: 'POST',
+                  error: function() {
+
+                    console.log("Error Updating Task")
+                  },
+                  success: function(data) {
+                    alert('Yay!  Saved.');
+                    
+                  }
+              });
+
+              
+
+
+          }
+
+        }
+      });
+      
+      Mivotal.TrackersIndexView = Ember.View.extend({
+        didInsertElement: function() {
+          var me = this,
+              controller = this.get('controller');  
+
+          this.$(".sortable").sortable({
+            update: function(event, ui) {
+              var itemBefore, itemAfter;     
+                
+
+              var item = ui.item.closest('li').data("id");          
+
+              var result = me.controller.get('model').filter(function(tracker) {
+                  return tracker.id ===  item ; // filter out appropriate one
+              })[0];
+
+              console.log("points before:");
+              console.log(result.points);
+              
+              if(ui.item.closest('li').next())
+                itemAfter = parseFloat(ui.item.closest('li').next().data("points"));
+              if(ui.item.closest('li').prev())
+              itemBefore = parseFloat(ui.item.closest('li').prev().data("points"));
+
+              if(itemBefore != undefined )
+              {
+                  if(result.points > itemBefore)
+                    Ember.set(result, 'points', itemBefore - 1);                    
+                  else
+                    Ember.set(result, 'points', itemBefore + 1);                     
+              }
+              else{
+                if(result.points > itemAfter)
+                  Ember.set(result, 'points', itemAfter - 1);                    
+                else
+                  Ember.set(result, 'points', itemAfter + 1);                   
+              }
+
+              console.log(result);
+
+               console.log("points after:");
+              console.log(result.points);
+
+
+              
+              me.get('controller.controllers.TrackersShow').send('updateTracker', result);
+
+              me.rerender();
+            }
+          }); 
+        
+        
+
+        
+
+        /*
+          
+          this.$(".sortable").sortable({
+            change: function(event, ui) {
+              var itemBefore, itemAfter;         
+
+              var item = ui.item.closest('li').data("id");          
+
+              var result = me.controller.get('model').filter(function(tracker) {
+                  return tracker.id ===  item ; // filter out appropriate one
+              })[0];
+              
+              if(ui.item.closest('li').next())
+                itemAfter = parseFloat(ui.item.closest('li').next().data("points"));
+              if(ui.item.closest('li').prev())
+              itemBefore = parseFloat(ui.item.closest('li').prev().data("points"));
+
+              if(itemBefore != undefined )
+              {
+                  if(result.points > itemBefore)
+                    Ember.set(result, 'points', itemBefore - 1);                    
+                  else
+                    Ember.set(result, 'points', itemBefore + 1);                     
+              }
+              else{
+                if(result.points > itemAfter)
+                  Ember.set(result, 'points', itemAfter - 1);                    
+                else
+                  Ember.set(result, 'points', itemAfter + 1);                   
+              }
+
+              console.log(result);
+             
+              me.get('controller.controllers.TrackersShow').send('testing', result);
+              debugger;
+            },
+
+            update: function( event, ui ) {
+              debugger;
+            }
+          
+          });
+
+        */
+
+         
+
+        
+
+
+          
+
+          //controller.updateTracker(result);
+        
+        }
+      });
+
+      
+
+    </script>
+
+
+   
+
+        
+  </body>
+
+
+</html>

@@ -1,0 +1,117 @@
+.trackers-container {		
+	.trackers-list {
+		//position: relative;
+		padding: 0;
+
+		
+
+		li {
+			position: relative;
+			list-style-type: none;
+			height: 40px;
+			line-height: 40	px;
+			//padding: $default-padding;
+			background: #fff;
+			color: #333;
+			font-size: 16px;
+			margin-bottom: 10px;	
+
+			.dragger {
+				content: "";
+				display: inline-block;
+				position: absolute;
+				left: 0;
+				width: 25px;
+				height: 40px;;				
+				background: rgba(#C72543, 0.50);
+
+				display: inline-block;
+			  font: normal normal normal 14px/1 FontAwesome;
+			  font-size: inherit;
+			  text-rendering: auto;
+			  -webkit-font-smoothing: antialiased;
+			  -moz-osx-font-smoothing: grayscale;
+			  transform: translate(0, 0);
+
+				&.Task {
+					background: #286090;
+					&:before {
+						content: "\f0ad";
+						line-height: 40px;
+						display: block;
+						text-align: center;
+						color: white;
+					}
+				}
+
+				&.Defect {
+					background: #D9534F;
+					&:before {
+						content: "\f188";
+						line-height: 40px;
+						display: block;
+						text-align: center;
+						color: white;
+					}
+				}
+
+				&.Requirement {
+					background: #449D44;
+					&:before {
+						content: "\f044";
+						line-height: 40px;
+						display: block;
+						text-align: center;
+						color: white;
+					}
+				}
+
+			}		
+
+			a {
+				margin-left: 20px;
+			}
+			
+
+			.tracker-title {
+				display: inline-block;
+				font-size: 18px;
+				padding-left: 15px;
+				position: relative;
+				line-height: 40px;
+				height: 100%;
+				max-width: 750px;
+				white-space: nowrap;
+				overflow: hidden;
+				text-overflow: ellipsis;
+			}
+
+			.assigned-to {
+				float: right;
+				background: rgba(#C72543, 0.50);
+				color: white;
+				padding: 0 10px;
+			}
+
+			.status {
+				position: absolute;
+				right: 0;
+				bottom: 0;
+				font-size: 12px;
+				font-weight: bold;
+				font-family: monospace;
+				color: darken(#ccc, 15%);
+				padding-right: 10px;
+
+				&:hover {
+					color: darken(#ccc, 30%);
+				}
+
+			}
+
+
+		}
+	}
+
+
+}

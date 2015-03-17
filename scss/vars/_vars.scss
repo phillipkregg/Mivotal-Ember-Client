@@ -1,0 +1,33 @@
+
+
+/* Fonts */
+@import url(http://fonts.googleapis.com/css?family=Black+Ops+One);
+
+/* Maintenance Vars */
+$color-percentage: 3%;
+$default-padding: 10px;
+
+/* Colors */
+
+$light-grey-base: #dedede;
+$light-grey-1: $light-grey-base;
+$light-grey-2: darken($light-grey-1, $color-percentage);
+$light-grey-3: darken($light-grey-2, $color-percentage);
+
+
+$medium-grey-base: #AAAAAA;
+$medium-grey-1: $medium-grey-base;
+$medium-grey-2: darken($medium-grey-1, $color-percentage);
+$medium-grey-3: darken($medium-grey-2, $color-percentage);
+
+// Reds
+$medium-red-base: #CD0000;
+$medium-red-1: $medium-red-base;
+$medium-red-2: darken($medium-red-1, $color-percentage);
+
+// Greens
+$light-green-base: #4CBB17;
+$light-green-1: $light-green-base;
+$light-green-2: darken($light-green-1, $color-percentage);
+
+
