@@ -1,4 +1,12 @@
 .show-page-container {
+	//position: fixed;
+	//top: 0;
+
+	
+	.tracker-id-label {
+		display: inline-block;
+		width: 100%;
+	}
 
 	.well {
 		background: white;
@@ -18,15 +26,17 @@
 	}
 
 	.tracker-title {
-		font-size: 20px;
+		font-size: 16px;
+		margin: 10px 0;
+		padding: 10px;
 		color: #666;
-		padding: 0 40px 0 40px;
+		background: white;
 		text-align: left;
 	}
 
 	.description {					
 		color: #666;
-		font-size: 18px;
+		font-size: 14px;
 		margin: 20px 0 20px 0;
 	}
 
@@ -51,6 +61,30 @@
 
 	}
 
+
+	.label {
+		font-size: 20px;
+		border-radius: 0;
+	}
+
+	.effort-boxes {
+		.form-group {
+			float: left;
+			width: 25%;
+
+			.form-control {
+				color: #666;
+				border-radius: 0;
+				height: 50px;
+				font-size: 16px;
+			}
+			label {
+				color: #666;
+				font-size: 14px;
+			}
+		}
+
+	}
 	
 	
 }

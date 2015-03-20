@@ -46,15 +46,16 @@
 
     </script>
 
+    <script type="text/x-handlebars" data-template-name="trackers/index">
+      <div class="select-tracker-prompt arrow_box">
+        <i class="fa fa-wrench"></i>
+        <p>Select a tracker to start editing!</p>
+      </div>
+    </script>
+
     <script type="text/x-handlebars" data-template-name="trackers">    
       <h4 class="subheader-title">Mivotal</h4>
       
-      {{outlet}}
-
-    </script>
-
-    <script type="text/x-handlebars" data-template-name="trackers/index">
-
       <ul class="breadcrumb">
         <li>{{#link-to 'index'}}home{{/link-to}}</li>
         <li>trackers</li>        
@@ -73,15 +74,35 @@
               {{/each}}
             </ul>
           </div>
+
+
+          <div class="dropdown">
+            <button class="btn btn-default dropdown-toggle" type="button" id="dropdownMenu2" data-toggle="dropdown" aria-expanded="true">
+              {{currentPlanningFolder.title}}
+              <span class="caret"></span>
+            </button>
+            <ul class="dropdown-menu" role="menu" aria-labelledby="dropdownMenu2">
+              {{#each folder in planningFolders}} 
+                <li role="presentation"><a {{action 'changePlanningFolder' folder}} role="menuitem" tabindex="-1" href="#">{{folder.title}} </a></li>          
+              {{/each}}
+            </ul>
+          </div>
+
         </div>
-      </div>     
+      </div>   
+
+      <div class="outlet-container">
+        {{outlet}}
+      </div>  
     
-      <div class="trackers-container">
+      <div class="trackers-container">        
+
         <ul class="trackers-list sortable">
           {{#each tracker in this}}
             
-              <li class="tracker" {{bind-attr data-id="tracker.id"}} {{bind-attr data-points="tracker.points"}}>
-                <span {{action 'dragMe'}} {{bind-attr class=":dragger tracker.folder_title"}}></span>                               
+              <li class="tracker" {{bind-attr class="selected"}} {{bind-attr data-id="tracker.id"}} {{bind-attr data-points="tracker.points"}}>
+                <span {{action 'dragMe'}} {{bind-attr class=":dragger tracker.folder_title"}}></span>                     
+
                 {{#link-to 'trackers.show' tracker.id}}
                 <span class="tracker-title">{{tracker.title}}</span>
                 {{/link-to}}
@@ -90,13 +111,16 @@
                 <span class="status">{{tracker.status}}</span>
               </li>
 
-              
-            
+              {{#if selected}}
+                <div>testing</div>
+              {{/if}}
+           
+
           {{/each}}
         </ul>
       </div>   
 
-    </script>
+    </script>  
 
 
     <script type="text/x-handlebars" data-template-name="trackers/show">
@@ -111,25 +135,20 @@
         <strong>Success!</strong> Your task has been updated.
       </div>
   
-      <div class="show-page-container">
+      <div class="show-page-container col-md-12">
 
         <div class="project-title">
           {{projectTitle}}
         </div>
 
-        <div class="well row">        
 
-          <div class="col-md-1">
-            <div class="label label-default pull-left">
+        <div class="row">          
+          <div class="">
+            <div class="tracker-id-label label label-default pull-left">
               {{id}}
-            </div>
-          </div>                    
+            </div>   
 
-          <div class="col-md-10 text-center tracker-title">
-            {{title}}
-          </div>
-
-          <div class="col-md-1">
+            {{!--
             <div class="label label-primary pull-right" {{action "startTask"}}>
               {{#if status}}
                 {{status}}
@@ -137,8 +156,17 @@
                 No Status
               {{/if}}
             </div>    
-          </div>          
+          </div>
+          --}}        
 
+        </div>
+
+        <div class="row">
+          <div class="col-md-12">
+            <div class="tracker-title">
+              {{title}}
+            </div>
+          </div>
         </div>
         
        
@@ -165,23 +193,27 @@
           </div>
                     
           
-          <div class="row">
-            <div class="form-group col-md-2">
-              <label for="status">Status</label>
-              {{view "select" value=status content=status_options class="form-control"}}
+          <div class="row effort-boxes">
+            <div class="col-md-12">
+
+              <div class="form-group">
+                <label for="status">Status</label>
+                {{view "select" value=status content=statusOptions class="form-control"}}
+              </div>
+              <div class="form-group">
+                <label for="estimated-effort">Estimated</label>
+                {{input id="estimated-effort" class="form-control" type='number' value=estimated_effort }}
+              </div>  
+              <div class="form-group">
+                <label for="remaining-effort">Remaining</label>
+                {{input id="remaining-effort" type='number' value=remaining_effort class="form-control"}}
+              </div>
+              <div class="form-group">
+                <label for="actual-effort">Actual</label>
+                {{input id="actual-effort" class="form-control"  type='number' value=actual_effort }}
+              </div>  
+
             </div>
-            <div class="form-group col-md-2">
-              <label for="estimated-effort">Estimated Effort</label>
-              {{input id="estimated-effort" class="form-control" type='number' value=estimated_effort }}
-            </div>  
-            <div class="form-group col-md-2">
-              <label for="remaining-effort">Remaining Effort</label>
-              {{input id="remaining-effort" type='number' value=remaining_effort class="form-control"}}
-            </div>
-            <div class="form-group col-md-2">
-              <label for="actual-effort">Actual Effort</label>
-              {{input id="actual-effort" class="form-control"  type='number' value=actual_effort }}
-            </div>  
           </div>          
 
           <div class="button-container">
@@ -207,21 +239,7 @@
       // It is being created by the GetPlanningFolder.php file 
       // Data is normally handled through promises   
 
-
-      (function() {
-        data = jQuery.getJSON('http://localhost:3000', function(data) {
-
-
-          
-            window.data = data;
-        });
-
-        //debugger;
-
-        
-      }()); 
-
-      
+            
                                  
       window.Mivotal = Ember.Application.create({
         rootElement: "#mivotal-main"
@@ -244,15 +262,59 @@
         
         
         model: function() {
-          return Ember.$.getJSON('http://localhost:3000').then(function(response) {
-            return response
-          });     
+          
+          /*
+          return Ember.$.getJSON('http://localhost:3000/home/initialize').then(function(response) {
+            sessionStorage.setItem("session_id", response.session_id);
+            window.data = response.multi_ref;
+            return response.multi_ref;
+          });
+          */
+
+          var data;
+         
+
+          if (this.controllerFor("Trackers").get('currentPlanningFolder')) {
+            data = {
+              "planning_folder_id": this.controllerFor("Trackers").get('currentPlanningFolder').id
+            }
+          } else {
+            data = {
+              "planning_folder_id": "plan1334"              
+            }
+            this.controllerFor("Trackers").set('currentPlanningFolder', "plan1334")
+          }
+         
+         
+          return $.ajax({
+                url: 'http://localhost:3000/home/initialize',
+                data: JSON.stringify(data),
+                dataType: 'json',
+                contentType: 'application/json',
+                type: 'POST',
+                complete: function(req, res) {
+                  console.log(req, res);                  
+                  if(res === "success") {                  
+                    
+                  }
+                }                  
+                
+            }).then(function(data) {
+                window.data = data.multi_ref;
+                return data.multi_ref;
+            })
+     
             
         },
         
         
-        afterModel: function(transition, route) {          
+        beforeModel: function(transition, route) {          
           //this.controllerFor("TrackersIndex").send('getCurrentFilter');
+
+          Ember.$.getJSON('http://localhost:3000/home/get_all_planning_folders').then(function(response) {
+            window.planning_folders = response.multi_ref;
+          })
+
         }
         
 
@@ -261,30 +323,47 @@
 
       Mivotal.TrackersShowRoute = Ember.Route.extend({
 
-
         model: function(params) {
           var modelsArray = this.modelFor('trackers'),              
               tracker;     
 
-          $.each(modelsArray, function(key, value) {
+          $.each(modelsArray, function(key, value) {  
 
-            //debugger;
-           
             if (value.id === params.trackerid) {
               
               tracker = value;
+              tracker.selectedTracker = true;
+
             }
-          });
+          });          
+
+          console.log(modelsArray);
 
           console.log(tracker);
 
           return tracker;
           
+        },
+
+
+        /*
+        
+        renderTemplate: function() {
+            this.render('trackers/show', {
+              //into: 'trackers',
+              outlet: this.currentModel.id,
+              //controller: 'TrackersShow'
+            });
+
         }
+        */
+      
+
+
       });
 
 
-      Mivotal.TrackersIndexController = Ember.ArrayController.extend({
+      Mivotal.TrackersController = Ember.ArrayController.extend({
 
         developers : [
             { name: "All"},
@@ -309,12 +388,27 @@
           return this.developers;
         }.property(),
 
-      
         
         model: function() {  
           var trackers = window.data        
           
           return trackers;
+        }.property(),
+
+        planningFolders : function() {
+          return window.planning_folders
+        }.property(),
+
+        currentPlanningFolder : function() {
+          return {
+            title: "3.1",
+            id: 'plan1334'
+          }
+          
+        }.property(),
+
+        selected : function() {
+          return false;
         }.property(),
         
 
@@ -323,21 +417,58 @@
         }.property(),
 
         
-        actions: {               
+        actions: {  
+
+          selectTracker: function(tracker) {
+            //debugger;        
+          },            
 
           changeFilter: function(item) {
             
-            this.set('currentFilter', item.name);  
-
-            debugger;
+            this.set('currentFilter', item.name);              
             
             if (this.get('currentFilter') === "All") {
               this.set('model', window.data);
 
             } else {
+              
               this.set('model', window.data.filterBy("assigned_to_fullname", this.get('currentFilter')));
             }
             
+          },
+
+          changePlanningFolder: function(folder) {
+            var me = this,
+                planning_folder_object;
+
+            this.set('curentPlanningFolder', folder);
+
+            planning_folder_object = {
+              "planning_folder_id": folder.id
+            }
+            
+            $.ajax({
+                url: 'http://localhost:3000/home/initialize',
+                data: JSON.stringify(planning_folder_object),
+                dataType: 'json',
+                context: me,
+                contentType: 'application/json',
+                type: 'POST',
+                complete: function(req, res) {
+                  console.log(req, res);                  
+                  if(res === "success") {                  
+                    
+                  }
+                }                  
+                
+            }).then(function(data) {
+                //debugger;
+                window.data = data.multi_ref;
+                this.set('model', data.multi_ref);
+                //return data.multi_ref;
+            })
+
+
           }          
 
         } // end actions
@@ -365,13 +496,13 @@
           } else {
             return true;
           }
-        },
+        },       
 
         statusOptions: ['Started', 'In Development', 'Open / Acknowledged', 'Not Started'],
 
         devs : function() {           
           return this.developers;
-        }.property(),
+        }.property(),       
 
         actions: {
 
@@ -390,7 +521,7 @@
 
             var data;
                 updateAlert = $("#update-tracker-alert");
-
+                
             if (trackerData) {
               data = trackerData;
             } else {
@@ -398,26 +529,21 @@
             }
 
             data.assignedTo = data.assigned_to_username;
-            data = JSON.stringify(data);
-
-           // debugger;
-
-            
+            data = JSON.stringify(data);              
           
             $.ajax({
                   url: 'http://localhost:3000/home/set_tracker_data',
                   data: data,
-                  dataType: 'json',
+                  //dataType: 'json',
                   contentType: 'application/json',
                   type: 'POST',
-                  error: function() {
-
-                    console.log("Error Updating Task")
-                  },
-                  success: function(data) {
-                    alert('Yay!  Saved.');
-                    
-                  }
+                  complete: function(req, res) {
+                    console.log(req, res);
+                    if(res === "success") {
+                      alert("Success!");
+                    }
+                  }                  
+                  
               });
 
               
@@ -428,15 +554,14 @@
         }
       });
       
-      Mivotal.TrackersIndexView = Ember.View.extend({
+      Mivotal.TrackersView = Ember.View.extend({
         didInsertElement: function() {
           var me = this,
               controller = this.get('controller');  
 
           this.$(".sortable").sortable({
             update: function(event, ui) {
-              var itemBefore, itemAfter;     
-                
+              var itemBefore, itemAfter;                                
 
               var item = ui.item.closest('li').data("id");          
 
@@ -447,10 +572,14 @@
               console.log("points before:");
               console.log(result.points);
               
-              if(ui.item.closest('li').next())
+              if(ui.item.closest('li').next().length) {
                 itemAfter = parseFloat(ui.item.closest('li').next().data("points"));
-              if(ui.item.closest('li').prev())
-              itemBefore = parseFloat(ui.item.closest('li').prev().data("points"));
+              }
+                
+              if(ui.item.closest('li').prev().length) {
+                itemBefore = parseFloat(ui.item.closest('li').prev().data("points"));
+              }
+              
 
               if(itemBefore != undefined )
               {

@@ -13,18 +13,48 @@
 @media (min-width: 1200px) {
   .col-md-2 {
     width: 25%; } }
-.label {
-  font-size: 20px;
-  border-radius: 0; }
+.select-tracker-prompt {
+  position: relative;
+  margin-left: 20px; }
+  .select-tracker-prompt p {
+    font-size: 4vh;
+    color: #e5e5e5;
+    float: left;
+    padding-top: 10%;
+    text-align: center; }
+  .select-tracker-prompt .fa-wrench {
+    display: block;
+    position: absolute;
+    font-size: 40vh;
+    top: 0;
+    left: 20px;
+    color: rgba(255, 255, 255, 0.12); }
 
-.form-group .form-control {
-  color: #666;
-  border-radius: 0;
-  height: 50px;
-  font-size: 18px; }
-.form-group label {
-  color: #666;
-  font-size: 18px; }
+.dropdown {
+  float: left;
+  margin-right: 10px; }
+
+.arrow_box {
+  position: relative;
+  background: rgba(199, 37, 67, 0.5);
+  min-height: 500px;
+  font-family: 'Black Ops One';
+  padding: 20px;
+  text-align: center; }
+
+.arrow_box:after {
+  right: 100%;
+  top: 50%;
+  border: solid transparent;
+  content: " ";
+  height: 0;
+  width: 0;
+  position: absolute;
+  pointer-events: none;
+  border-color: rgba(119, 119, 119, 0);
+  border-right-color: rgba(199, 37, 67, 0.5);
+  border-width: 30px;
+  margin-top: -30px; }
 
 .trackers-container .trackers-list {
   padding: 0; }
@@ -33,9 +63,8 @@
     list-style-type: none;
     height: 40px;
     line-height: 40	px;
-    background: #fff;
     color: #333;
-    font-size: 16px;
+    font-size: 14px;
     margin-bottom: 10px; }
     .trackers-container .trackers-list li .dragger {
       content: "";
@@ -45,6 +74,7 @@
       width: 25px;
       height: 40px;
       background: rgba(199, 37, 67, 0.5);
+      z-index: 1;
       display: inline-block;
       font: normal normal normal 14px/1 FontAwesome;
       font-size: inherit;
@@ -77,15 +107,22 @@
           text-align: center;
           color: white; }
     .trackers-container .trackers-list li a {
-      margin-left: 20px; }
+      padding-left: 20px;
+      background: #fff;
+      float: left;
+      width: 100%;
+      height: 100%;
+      position: absolute; }
+      .trackers-container .trackers-list li a.active {
+        background: rgba(255, 255, 0, 0.15); }
     .trackers-container .trackers-list li .tracker-title {
       display: inline-block;
-      font-size: 18px;
+      font-size: 14px;
       padding-left: 15px;
       position: relative;
       line-height: 40px;
       height: 100%;
-      max-width: 750px;
+      max-width: 60%;
       white-space: nowrap;
       overflow: hidden;
       text-overflow: ellipsis; }
@@ -93,7 +130,9 @@
       float: right;
       background: rgba(199, 37, 67, 0.5);
       color: white;
-      padding: 0 10px; }
+      padding: 0 5px;
+      position: relative;
+      z-index: 1; }
     .trackers-container .trackers-list li .status {
       position: absolute;
       right: 0;
@@ -102,10 +141,14 @@
       font-weight: bold;
       font-family: monospace;
       color: #a6a6a6;
-      padding-right: 10px; }
+      padding-right: 10px;
+      z-index: 1; }
       .trackers-container .trackers-list li .status:hover {
         color: gray; }
 
+.show-page-container .tracker-id-label {
+  display: inline-block;
+  width: 100%; }
 .show-page-container .well {
   background: white;
   margin: 0;
@@ -118,13 +161,15 @@
   font-size: 18px;
   color: #666; }
 .show-page-container .tracker-title {
-  font-size: 20px;
+  font-size: 16px;
+  margin: 10px 0;
+  padding: 10px;
   color: #666;
-  padding: 0 40px 0 40px;
+  background: white;
   text-align: left; }
 .show-page-container .description {
   color: #666;
-  font-size: 18px;
+  font-size: 14px;
   margin: 20px 0 20px 0; }
 .show-page-container .button-container {
   width: 100%;
@@ -139,13 +184,27 @@
     .show-page-container .button-container .btn:last-child {
       float: right;
       background: #3d9713; }
+.show-page-container .label {
+  font-size: 20px;
+  border-radius: 0; }
+.show-page-container .effort-boxes .form-group {
+  float: left;
+  width: 25%; }
+  .show-page-container .effort-boxes .form-group .form-control {
+    color: #666;
+    border-radius: 0;
+    height: 50px;
+    font-size: 16px; }
+  .show-page-container .effort-boxes .form-group label {
+    color: #666;
+    font-size: 14px; }
 
 body {
   background: #dedede; }
 
 .subheader-title {
   font-family: 'Black Ops One';
-  color: #cd0000;
+  color: #CD0000;
   font-size: 1.5em; }
 
 .breadcrumb {
@@ -157,12 +216,12 @@ body {
   text-align: center; }
   .homepage h1 {
     font-family: 'Black Ops One';
-    color: #cd0000;
+    color: #CD0000;
     font-size: 8em;
     margin-bottom: 50px; }
   .homepage .btn-trackers {
     font-family: 'Black Ops One';
-    background: #cd0000;
+    background: #CD0000;
     color: white;
     font-size: 25px;
     padding: 20px; }
@@ -174,3 +233,15 @@ body {
     position: absolute; }
     .homepage p span {
       font-size: 14px; }
+
+.trackers-container {
+  float: left;
+  width: 48%; }
+
+.outlet-container {
+  float: right;
+  width: 48%; }
+  .outlet-container .breadcrumb {
+    display: none; }
+
+/*# sourceMappingURL=application.css.map */
