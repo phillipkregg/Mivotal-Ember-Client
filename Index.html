@@ -272,7 +272,8 @@
           */
 
           var data;
-         
+
+
 
           if (this.controllerFor("Trackers").get('currentPlanningFolder')) {
             data = {
@@ -311,9 +312,9 @@
         beforeModel: function(transition, route) {          
           //this.controllerFor("TrackersIndex").send('getCurrentFilter');
 
-          Ember.$.getJSON('http://localhost:3000/home/get_all_planning_folders').then(function(response) {
-            window.planning_folders = response.multi_ref;
-          })
+          Ember.$.getJSON('http://localhost:3000/home/get_all_planning_folders').then(function(response) {            
+              window.planning_folders = response.multi_ref;
+            });
 
         }
         
@@ -390,7 +391,7 @@
 
         
         model: function() {  
-          var trackers = window.data        
+          var trackers = window.data  
           
           return trackers;
         }.property(),
@@ -399,8 +400,8 @@
           return window.planning_folders
         }.property(),
 
-        currentPlanningFolder : function() {
-          return {
+        currentPlanningFolder : function() {          
+          return {            
             title: "3.1",
             id: 'plan1334'
           }
@@ -425,7 +426,7 @@
 
           changeFilter: function(item) {
             
-            this.set('currentFilter', item.name);              
+            this.set('currentFilter', item.name); 
             
             if (this.get('currentFilter') === "All") {
               this.set('model', window.data);
@@ -440,8 +441,8 @@
           changePlanningFolder: function(folder) {
             var me = this,
                 planning_folder_object;
-
-            this.set('curentPlanningFolder', folder);
+                
+            this.set('currentPlanningFolder', folder);
 
             planning_folder_object = {
               "planning_folder_id": folder.id
@@ -462,9 +463,15 @@
                 }                  
                 
             }).then(function(data) {
-                //debugger;
-                window.data = data.multi_ref;
-                this.set('model', data.multi_ref);
+                if (data.multi_ref.length) {
+                  window.data = data.multi_ref;
+                  this.set('model', data.multi_ref);
+                } else {
+                  window.data = data.multi_ref;
+                  this.set('model', "");
+                  alert("No multi_ref.  Deal wit it");
+                }
+                
                 //return data.multi_ref;
             })
 
