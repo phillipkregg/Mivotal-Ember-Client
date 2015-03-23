@@ -32,7 +32,10 @@
 
 .dropdown {
   float: left;
-  margin-right: 10px; }
+  margin-right: 10px;
+  min-width: 200px; }
+  .dropdown button {
+    width: 100%; }
 
 .arrow_box {
   position: relative;

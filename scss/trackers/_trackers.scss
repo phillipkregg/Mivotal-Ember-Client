@@ -28,6 +28,13 @@
 .dropdown {
 	float: left;
 	margin-right: 10px;
+	min-width: 200px;
+
+	button {
+		width: 100%;
+	}
+
+
 }
 
 
