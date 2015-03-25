@@ -3,9 +3,21 @@
 	//top: 0;
 
 	
+
+
+	.tracker-label {
+		color: #666;
+	}
+
+	.assigned-to {
+		font-size: 16px;
+	}
+	
 	.tracker-id-label {
 		display: inline-block;
+		font-size: 18px;
 		width: 100%;
+		padding: 10px;
 	}
 
 	.well {
@@ -38,6 +50,7 @@
 		color: #666;
 		font-size: 14px;
 		margin: 20px 0 20px 0;
+		word-break: break-word;
 	}
 
 	.button-container {
@@ -48,10 +61,12 @@
 		.btn {
 			border-radius: 0;
 			width: 50%;
+			font-weight: bold;
 			
 			&:first-child {
 				float: left;
 				background: darken($light-grey-3, 5%);
+				color: #666;
 			}
 			&:last-child {
 				float: right;
@@ -62,9 +77,15 @@
 	}
 
 
-	.label {
-		font-size: 20px;
-		border-radius: 0;
+	.artifact-labels-row {
+		.label, label-primary, label-info, label-warning {
+			float: left;
+			padding: 10px;
+			width: 33.3333%;
+			display: inline-block;
+		}
+
+
 	}
 
 	.effort-boxes {
@@ -85,6 +106,49 @@
 		}
 
 	}
+
+
+	.attachments-container {		
+		margin: 20px 0 0 0;
+		
+		&:before {
+			content: "Attachments";
+			background: darken($light-grey-3, 10%);
+			padding: 10px;
+			display: block;
+			color: #666;
+			font-size: 16px;
+			font-weight: bold;
+		}
+
+		.attachments-list {			
+			list-style-type: none;
+			padding: 0;
+
+
+			.attachments-list-item {				
+
+				a {
+					font-size: 18px;
+					padding: 10px;
+					display: block;
+					background: white;
+					border-bottom: 1px solid $light-grey-1;
+					padding-left: 30px;
+					position: relative;
+
+					.fa {
+						position: absolute;
+						left: 10px;
+						top: 30%;
+					}
+				}
+
+			}
+		}
+
+	}
+
 	
 	
 }

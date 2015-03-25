@@ -149,9 +149,15 @@
       .trackers-container .trackers-list li .status:hover {
         color: gray; }
 
+.show-page-container .tracker-label {
+  color: #666; }
+.show-page-container .assigned-to {
+  font-size: 16px; }
 .show-page-container .tracker-id-label {
   display: inline-block;
-  width: 100%; }
+  font-size: 18px;
+  width: 100%;
+  padding: 10px; }
 .show-page-container .well {
   background: white;
   margin: 0;
@@ -173,23 +179,28 @@
 .show-page-container .description {
   color: #666;
   font-size: 14px;
-  margin: 20px 0 20px 0; }
+  margin: 20px 0 20px 0;
+  word-break: break-word; }
 .show-page-container .button-container {
   width: 100%;
   overflow: auto;
   margin-top: 20px; }
   .show-page-container .button-container .btn {
     border-radius: 0;
-    width: 50%; }
+    width: 50%;
+    font-weight: bold; }
     .show-page-container .button-container .btn:first-child {
       float: left;
-      background: #c2c2c2; }
+      background: #c2c2c2;
+      color: #666; }
     .show-page-container .button-container .btn:last-child {
       float: right;
       background: #3d9713; }
-.show-page-container .label {
-  font-size: 20px;
-  border-radius: 0; }
+.show-page-container .artifact-labels-row .label, .show-page-container .artifact-labels-row label-primary, .show-page-container .artifact-labels-row label-info, .show-page-container .artifact-labels-row label-warning {
+  float: left;
+  padding: 10px;
+  width: 33.3333%;
+  display: inline-block; }
 .show-page-container .effort-boxes .form-group {
   float: left;
   width: 25%; }
@@ -201,6 +212,31 @@
   .show-page-container .effort-boxes .form-group label {
     color: #666;
     font-size: 14px; }
+.show-page-container .attachments-container {
+  margin: 20px 0 0 0; }
+  .show-page-container .attachments-container:before {
+    content: "Attachments";
+    background: #b5b5b5;
+    padding: 10px;
+    display: block;
+    color: #666;
+    font-size: 16px;
+    font-weight: bold; }
+  .show-page-container .attachments-container .attachments-list {
+    list-style-type: none;
+    padding: 0; }
+    .show-page-container .attachments-container .attachments-list .attachments-list-item a {
+      font-size: 18px;
+      padding: 10px;
+      display: block;
+      background: white;
+      border-bottom: 1px solid #dedede;
+      padding-left: 30px;
+      position: relative; }
+      .show-page-container .attachments-container .attachments-list .attachments-list-item a .fa {
+        position: absolute;
+        left: 10px;
+        top: 30%; }
 
 body {
   background: #dedede; }
@@ -227,15 +263,23 @@ body {
     background: #CD0000;
     color: white;
     font-size: 25px;
-    padding: 20px; }
+    padding: 20px;
+    min-width: 500px; }
   .homepage p {
     left: 50%;
-    top: 60%;
-    font-size: 25px;
-    color: #333;
+    top: 45%;
+    font-size: 22px;
+    color: #666;
     position: absolute; }
     .homepage p span {
       font-size: 14px; }
+  .homepage .login-form-container {
+    width: 500px;
+    margin: 0 auto; }
+    .homepage .login-form-container input {
+      height: 55px;
+      font-size: 20px;
+      color: #666; }
 
 .trackers-container {
   float: left;
@@ -246,5 +290,38 @@ body {
   width: 48%; }
   .outlet-container .breadcrumb {
     display: none; }
+
+@-webkit-keyframes fadeIn {
+  from {
+    opacity: 0; }
+  to {
+    opacity: 1; } }
+@-moz-keyframes fadeIn {
+  from {
+    opacity: 0; }
+  to {
+    opacity: 1; } }
+@keyframes fadeIn {
+  from {
+    opacity: 0; }
+  to {
+    opacity: 1; } }
+.fade-in {
+  opacity: 0;
+  /* make things invisible upon start */
+  -webkit-animation: fadeIn ease-in 1;
+  /* call our keyframe named fadeIn, use animattion ease-in and repeat it only 1 time */
+  -moz-animation: fadeIn ease-in 1;
+  animation: fadeIn ease-in 1;
+  -webkit-animation-fill-mode: forwards;
+  /* this makes sure that after animation is done we remain at the last keyframe value (opacity: 1)*/
+  -moz-animation-fill-mode: forwards;
+  animation-fill-mode: forwards;
+  -webkit-animation-duration: 1s;
+  -moz-animation-duration: 1s;
+  animation-duration: 1s;
+  -webkit-animation-delay: 0.7s;
+  -moz-animation-delay: 0.7s;
+  animation-delay: 0.7s; }
 
 /*# sourceMappingURL=application.css.map */

@@ -24,6 +24,7 @@
     <!-- moment js -->
     <!-- <script type="text/javascript" src="libs/moment/moment.js"></script> -->
     <script type="text/javascript" src="require.js"></script>
+    <script type="text/javascript" src="scroll-to-fixed.js"></script>
     
     
   </head>
@@ -41,8 +42,23 @@
         <h1>Mivotal</h1>
         <p>Pivotal for Motion! <span>(sort of)</span></p>
 
-        {{#link-to 'trackers' class="btn btn-trackers"}} Take me to Trackers! {{/link-to}}
-      </div>         
+        <div class="login-form-container">
+          <form>
+            <div class="form-group">              
+              {{input value=username type="email" class="form-control" id="username-input" placeholder="Enter username"}}
+            </div>
+            <div class="form-group">              
+              {{input value=password type="password" class="form-control" id="password-input" placeholder="Password"}}
+            </div>          
+          </form>
+
+          <button {{ action 'login' }} class="btn btn-trackers">Login</button>
+
+        </div>
+
+        
+      </div>  
+
 
     </script>
 
@@ -144,7 +160,7 @@
 
         <div class="row">          
           <div class="">
-            <div class="tracker-id-label label label-default pull-left">
+            <div class="tracker-id-label label label-default">
               {{id}}
             </div>   
 
@@ -175,12 +191,12 @@
 
           <div class="row">
             <div class="form-group col-md-12">
-              <label for="status">Assigned To</label>
-              {{view "select" value=assigned_to_fullname content=devs optionValuePath="content.name" optionLabelPath="content.name" class="form-control"}}
+              <label class="tracker-label" for="status">Assigned To</label>
+              {{view "select" value=assigned_to_fullname content=devs optionValuePath="content.name" optionLabelPath="content.name" class="form-control assigned-to"}}
             </div>            
           </div>
 
-          <div class="row">
+          <div class="row artifact-labels-row">
             <div class="col-md-12">
               <div class="label label-primary">Type: {{folder_title}}</div>
               <div class="label label-info">Points: {{points}}</div>
@@ -226,6 +242,30 @@
           </div>
         </form>
 
+
+        <div class="attachments-container">
+          <ul class="attachments-list">
+            {{#each attachment in attachments}}
+
+              {{#if attachment.file_name}}
+                <li class="attachments-list-item">
+                  <a {{action 'getAttachment' attachment}} href="#">
+                    {{attachment.file_name}}
+                    <i class="fa fa-paperclip"></i>
+                  </a>
+
+                </li>
+              {{/if}}
+            {{/each}}
+          </ul>
+
+        </div>
+
+
+        
+
+
+
       </div>
       
     </script>
@@ -233,18 +273,25 @@
 
     <!--################ END OF HANDLEBARS TEMPLATES ##################-->
       
-    <script type="text/javascript">
-
-      // There is a global var containing the initial load data called "output".
-      // It is being created by the GetPlanningFolder.php file 
-      // Data is normally handled through promises   
-
+    <script type="text/javascript">      
             
                                  
       window.Mivotal = Ember.Application.create({
         rootElement: "#mivotal-main"
         //LOG_TRANSITIONS: true
-      });
+      });     
+
+      Mivotal.developers = [
+          { name: "All"},
+          { name: "No user"},
+          { name: "Jeff Martin"},
+          { name: "George Baldwin" , id: "dp077286" },
+          { name: "Phillip Lackey" , id: "dp078971" },
+          { name: "Troy Mulder" , id: "dp077286" },
+          { name: "Josh Flayhart" , id: "dp077286" },
+          { name: "Brice Mason" , id: "dp077286" },
+          { name: "Jason Malfatto" , id: "dp077286" }
+      ],
 
       Mivotal.Router.map(function() {
         this.resource("trackers", { path: "/trackers" }, function() {
@@ -257,23 +304,11 @@
       // if this doesn't exist, ember creates the index route automagically
       Mivotal.IndexRoute = Ember.Route.extend({});
 
-      Mivotal.TrackersRoute = Ember.Route.extend({
-
+      Mivotal.TrackersRoute = Ember.Route.extend({    
         
-        
-        model: function() {
-          
-          /*
-          return Ember.$.getJSON('http://localhost:3000/home/initialize').then(function(response) {
-            sessionStorage.setItem("session_id", response.session_id);
-            window.data = response.multi_ref;
-            return response.multi_ref;
-          });
-          */
-
+        model: function() {          
+         
           var data;
-
-
 
           if (this.controllerFor("Trackers").get('currentPlanningFolder')) {
             data = {
@@ -285,10 +320,11 @@
             }
             this.controllerFor("Trackers").set('currentPlanningFolder', "plan1334")
           }
-         
+
+          data.session_id = sessionStorage.getItem('session_id');        
          
           return $.ajax({
-                url: 'http://localhost:3000/home/initialize',
+                url: 'http://localhost:3000/home/get_artifact_list',
                 data: JSON.stringify(data),
                 dataType: 'json',
                 contentType: 'application/json',
@@ -310,22 +346,65 @@
         
         
         beforeModel: function(transition, route) {          
-          //this.controllerFor("TrackersIndex").send('getCurrentFilter');
+          //this.controllerFor("TrackersIndex").send('getCurrentFilter');          
 
+          var me      = this,
+              session = sessionStorage.getItem('session_id');
+
+          /*
           Ember.$.getJSON('http://localhost:3000/home/get_all_planning_folders').then(function(response) {            
               window.planning_folders = response.multi_ref;
             });
+          */         
 
+          return $.ajax({
+                url: 'http://localhost:3000/home/get_all_planning_folders',
+                context: me,
+                data: JSON.stringify({
+                  'session_id': session
+                }),
+                dataType: 'json',
+                contentType: 'application/json',
+                type: 'POST',
+                complete: function(req, res) {
+                  console.log(req, res);                  
+                  if(res === "success") {          
+                    //debugger;        
+                    window.planning_folders = req.responseJSON.multi_ref;
+                  } else {
+                    alert('error returning planning folders');
+                  }
+                }                  
+                
+            });
+
+        },               
+
+        action: {
+          loading: function(transition, originRoute) {
+            //displayLoadingSpinner();
+
+            // Return true to bubble this event to `FooRoute`
+            // or `ApplicationRoute`.
+            
+            return true;
+          }
         }
         
 
 
       });
 
-      Mivotal.TrackersShowRoute = Ember.Route.extend({
+      Mivotal.TrackersShowRoute = Ember.Route.extend({    
+
+
+
 
         model: function(params) {
-          var modelsArray = this.modelFor('trackers'),              
+          
+          var me          = this,
+              modelsArray = this.modelFor('trackers'), 
+              session     = sessionStorage.getItem('session_id'),             
               tracker;     
 
           $.each(modelsArray, function(key, value) {  
@@ -340,43 +419,80 @@
 
           console.log(modelsArray);
 
-          console.log(tracker);
+          console.log(tracker);       
 
-          return tracker;
+          return tracker;   
+          
           
         },
 
-
-        /*
-        
-        renderTemplate: function() {
-            this.render('trackers/show', {
-              //into: 'trackers',
-              outlet: this.currentModel.id,
-              //controller: 'TrackersShow'
-            });
-
+        afterModel: function(tracker) {
+          
         }
-        */
-      
+
+
 
 
       });
 
 
-      Mivotal.TrackersController = Ember.ArrayController.extend({
+      Mivotal.IndexController = Ember.Controller.extend({
+        username: undefined,
+        password: undefined,
 
-        developers : [
-            { name: "All"},
-            { name: "No user"},
-            { name: "Jeff Martin"},
-            { name: "George Baldwin" , id: "dp077286" },
-            { name: "Phillip Lackey" , id: "dp078971" },
-            { name: "Troy Mulder" , id: "dp077286" },
-            { name: "Josh Flayhart" , id: "dp077286" },
-            { name: "Brice Mason" , id: "dp077286" },
-            { name: "Jason Malfatto" , id: "dp077286" }
-        ],
+        actions: {
+
+          login: function() {
+            var me = this,
+                data;
+
+            data = {
+              username: this.getProperties('username').username,
+              password: this.getProperties('password').password
+            };
+
+            if (!data.username) {
+              alert('please enter a username');
+            } else if (!data.password) {
+              alert('please enter a password');
+            } else {
+
+                return $.ajax({
+                    url: 'http://localhost:3000/home/login',
+                    context: me,
+                    data: JSON.stringify(data),
+                    dataType: 'json',
+                    contentType: 'application/json',
+                    type: 'POST',
+                    complete: function(req, res) {
+                      console.log(req, res);                                           
+
+                      if(res === "success") {                  
+                        sessionStorage.setItem('session_id', req.responseJSON.session_id);                        
+                        this.transitionToRoute('trackers');
+                      }
+                      if(res === "error") {
+                        alert('error logging in, please check username and password');
+                        
+                      }
+                    }                  
+                    
+                });
+            }          
+
+
+          }
+
+
+        }
+
+
+      });
+
+
+      Mivotal.TrackersController = Ember.ArrayController.extend({        
+
+        developers : Mivotal.developers,
 
         needs: ["TrackersShow"], 
 
@@ -420,8 +536,9 @@
         
         actions: {  
 
+
           selectTracker: function(tracker) {
-            //debugger;        
+                 
           },            
 
           changeFilter: function(item) {
@@ -440,29 +557,26 @@
 
           changePlanningFolder: function(folder) {
             var me = this,
-                planning_folder_object;
+                planning_folder_object,
+                session = sessionStorage.getItem('session_id');
+
+                
                 
             this.set('currentPlanningFolder', folder);
 
             planning_folder_object = {
+              "session_id": session,
               "planning_folder_id": folder.id
             }
-            
+          
             $.ajax({
-                url: 'http://localhost:3000/home/initialize',
+                url: 'http://localhost:3000/home/get_artifact_list',
                 data: JSON.stringify(planning_folder_object),
                 dataType: 'json',
                 context: me,
                 contentType: 'application/json',
-                type: 'POST',
-                complete: function(req, res) {
-                  console.log(req, res);                  
-                  if(res === "success") {                  
-                    
-                  }
-                }                  
-                
-            }).then(function(data) {
+                type: 'POST'                
+            }).then(function(data) {              
                 if (data.multi_ref.length) {
                   window.data = data.multi_ref;
                   this.set('model', data.multi_ref);
@@ -473,7 +587,7 @@
                 }
                 
                 //return data.multi_ref;
-            })
+            });
 
 
           }          
@@ -484,17 +598,7 @@
 
       Mivotal.TrackersShowController = Ember.ObjectController.extend({
 
-        developers : [
-            { name: "All"},
-            { name: "No user"},
-            { name: "Jeff Martin"},
-            { name: "George Baldwin" , id: "dp077286" },
-            { name: "Phillip Lackey" , id: "dp078971" },
-            { name: "Troy Mulder" , id: "dp077286" },
-            { name: "Josh Flayhart" , id: "dp077286" },
-            { name: "Brice Mason" , id: "dp077286" },
-            { name: "Jason Malfatto" , id: "dp077286" }
-        ],
+        developers : Mivotal.developers,
 
         isStarted: function() {
           var model = this.model;
@@ -509,7 +613,40 @@
 
         devs : function() {           
           return this.developers;
-        }.property(),       
+        }.property(), 
+
+        attachments : [],
+
+        attachmentsUpdater: function() {
+                   
+          var me          = this,              
+              session     = sessionStorage.getItem('session_id'),
+              artifact_id = this.get('model').id,
+              data; 
+
+          data = {
+            "artifact_id": artifact_id,
+            "session_id": session
+          };          
+              
+          return $.ajax({
+              url: 'http://localhost:3000/home/list_attachments',
+              context: me,
+              data: JSON.stringify(data),
+              dataType: 'json',
+              contentType: 'application/json',
+              type: 'POST'  
+            }).then(function(data) {                  
+                if (data instanceof Array) {
+                  this.set('attachments', data)
+                  
+                } else {
+                  this.set('attachments', []);      
+                      
+                }
+                          
+            });
+        }.observes('model'),
 
         actions: {
 
@@ -522,9 +659,62 @@
           goToTrackers: function() {
             this.transitionToRoute("trackers");
           },
+
+          downloadAttachment: function(attachment) {
+
+            debugger;
+
+            var me            = this,
+                model         = me.get('model'),
+                attachment    = attachment,
+                session       = sessionStorage.getItem('session_id'),
+                container_id  = model.id,
+                raw_file_id   = attachment.raw_file_id,
+                data;
+
+
+            data = {
+              "session_id": session,
+              "container_id": container_id,
+              "raw_file_id": raw_file_id
+            }
+
+            $.ajax({
+                  url: 'http://localhost:3000/home/download_file',
+                  data: JSON.stringify(data),
+                  dataType: 'json',
+                  contentType: 'application/json',
+                  type: 'POST',
+                  complete: function(result) {
+                    debugger;
+                  } 
+              }).then(function(data) {
+                var decodedData = window.atob(data);
+              });
+          },
+
+          getAttachment: function(attachment) {
+
+
+            
+            var me          = this,
+                model       = this.get('model'),
+                baseUrl     = "http://teamforge.corp.motion-ind.com/sf/sfmain/do/downloadAttachment/",
+                projectPath = model.project_path_string,
+                folderPath  = model.folder_path_string,
+                trackerId   = model.id,
+                queryId     = attachment.attachment_id,
+                fullUrl     = baseUrl + projectPath + "/" + folderPath + "/" + trackerId + "?id=" + queryId,
+                win; 
+
+                win = window.open(fullUrl, '_blank');
+                win.focus();          
+
+          },
+
   
           updateTracker: function(trackerData) {
-            alert('update tracker');
+            alert('update tracker');            
 
             var data;
                 updateAlert = $("#update-tracker-alert");
@@ -565,6 +755,9 @@
         didInsertElement: function() {
           var me = this,
               controller = this.get('controller');  
+
+
+         $('.outlet-container').scrollToFixed();
 
           this.$(".sortable").sortable({
             update: function(event, ui) {

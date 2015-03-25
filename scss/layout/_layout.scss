@@ -30,19 +30,32 @@ body {
 		color: white;
 		font-size: 25px;
 		padding: 20px;
+		min-width: 500px;
 	}
 
 	p {
 		left: 50%;
-		top: 60%;
-		font-size: 25px;
-		color: #333;
+		top: 45%;
+		font-size: 22px;
+		color: #666;
 
 		position: absolute;
 		span {
 			font-size: 14px;
 		}
 	}
+
+	.login-form-container {
+		width: 500px;
+		margin: 0 auto;
+
+		input {
+			height: 55px;
+			font-size: 20px;
+			color: #666;
+		}
+	}
+
 }
 
 
@@ -60,3 +73,5 @@ body {
 	}
 
 }
+
+
